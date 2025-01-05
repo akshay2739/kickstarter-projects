@@ -1,24 +1,79 @@
 import { useEffect, useState } from "react";
 import { fetchProjects } from "../../apis/projects";
+import { ProjectsWrapper, Table } from "./styles";
+import { ProjectsProcessed } from "../../common/types";
+import Pagination from "../../common-util/pagination";
+import Loader from "../../common-util/loader";
 
 const KickStarterProjects = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [projects, setProjects] = useState([]);
+  const [allProjects, setAllProjects] = useState<ProjectsProcessed>([]);
+  const [projectsToShow, setProjectsToShow] = useState<ProjectsProcessed>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const onPageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    if (currentPage) {
+      setIsLoading(true);
+      setProjectsToShow(
+        allProjects.slice((currentPage - 1) * 5, currentPage * 5)
+      );
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 200);
+    }
+  }, [currentPage]);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const fetchedProjects = await fetchProjects();
 
-      console.log("fetchedProjects :>> ", fetchedProjects);
+      const firstFiveProjects = fetchedProjects.slice(0, 5);
 
-      //   @ts-expect-error
-      setProjects(fetchedProjects);
+      setAllProjects(fetchedProjects);
+      setProjectsToShow(firstFiveProjects);
+      setIsLoading(false);
     };
 
     fetchData();
   }, []);
 
-  return <div>KickStarterProjects</div>;
+  const totalPages = Math.ceil(allProjects.length / 5);
+
+  return (
+    <ProjectsWrapper>
+      <h1>Kickstarter Projects</h1>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Table>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Percentage funded</th>
+              <th>Amount pledged</th>
+            </tr>
+            {projectsToShow.map(({ amountPledged, sNo, percentageFunded }) => (
+              <tr key={sNo}>
+                <td>{sNo}</td>
+                <td>{percentageFunded}</td>
+                <td>{amountPledged}</td>
+              </tr>
+            ))}
+          </Table>
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={onPageChange}
+          />
+        </>
+      )}
+    </ProjectsWrapper>
+  );
 };
 
 export default KickStarterProjects;
