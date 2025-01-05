@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Pagination from "./index";
 
@@ -7,7 +8,7 @@ describe("Pagination", () => {
   const renderComponent = (props = {}) => {
     return render(
       <Pagination
-        totalPages={5}
+        totalPages={10}
         currentPage={1}
         onPageChange={onPageChange}
         {...props}
@@ -39,7 +40,7 @@ describe("Pagination", () => {
   });
 
   test("disables next button on last page", () => {
-    renderComponent({ currentPage: 5 });
+    renderComponent({ currentPage: 10 });
 
     expect(screen.getByText("Next")).toBeDisabled();
   });
@@ -65,8 +66,28 @@ describe("Pagination", () => {
     renderComponent();
 
     const jumpInput = screen.getByPlaceholderText("Jump to page");
-    fireEvent.change(jumpInput, { target: { value: "6" } });
+    fireEvent.change(jumpInput, { target: { value: "11" } });
     fireEvent.keyDown(jumpInput, { key: "Enter", code: "Enter" });
     expect(onPageChange).not.toHaveBeenCalled();
+  });
+
+  test("shows correct page numbers when current page is in the middle", () => {
+    renderComponent({ currentPage: 5 });
+
+    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getByText("4")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
+  });
+
+  test("shows correct page numbers when current page is near the end", () => {
+    renderComponent({ currentPage: 9 });
+
+    expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
+    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(screen.getByText("9")).toBeInTheDocument();
+    expect(screen.getByText("10")).toBeInTheDocument();
   });
 });

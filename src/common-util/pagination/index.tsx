@@ -31,29 +31,49 @@ const Pagination: React.FC<PaginationProps> = ({
     }
   };
 
+  const getPageNumbers = () => {
+    const pages = [];
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    while (pages.length < 5 && pages[0] > 1) {
+      pages.unshift(pages[0] - 1);
+    }
+
+    while (pages.length < 5 && pages[pages.length - 1] < totalPages) {
+      pages.push(pages[pages.length - 1] + 1);
+    }
+
+    return pages;
+  };
+
   return (
     <PaginationWrapper>
-      <button
+      <PageNumber
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
         Previous
-      </button>
-      {Array.from({ length: totalPages }, (_, index) => (
+      </PageNumber>
+      {getPageNumbers().map((page) => (
         <PageNumber
-          key={index + 1}
-          active={index + 1 === currentPage}
-          onClick={() => handlePageChange(index + 1)}
+          key={page}
+          active={page === currentPage}
+          onClick={() => handlePageChange(page)}
         >
-          {index + 1}
+          {page}
         </PageNumber>
       ))}
-      <button
+      <PageNumber
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
         Next
-      </button>
+      </PageNumber>
       <JumpInput
         type="number"
         placeholder="Jump to page"
