@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { COLORS } from "../../theme";
+import { COLORS } from "theme";
 
 export const PaginationWrapper = styled.div`
   display: flex;

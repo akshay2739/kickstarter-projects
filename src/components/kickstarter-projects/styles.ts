@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { COLORS } from "../../theme";
+import { COLORS } from "theme";
 
 export const ProjectsWrapper = styled.div`
   display: flex;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { fetchProjects } from "../../apis/projects";
+import { fetchProjects } from "apis/projects";
 import { ProjectsWrapper, Table } from "./styles";
 import { ProjectsProcessed } from "../../common/types";
-import Pagination from "../../common-util/pagination";
-import Loader from "../../common-util/loader";
+import Pagination from "common-util/pagination";
+import Loader from "common-util/loader";
 
 const KickStarterProjects = () => {
   const [isLoading, setIsLoading] = useState(false);
