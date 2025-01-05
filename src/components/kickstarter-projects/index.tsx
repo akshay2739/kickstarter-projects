@@ -22,6 +22,7 @@ const KickStarterProjects = () => {
 
   const onPageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+    /* Storing current page in URL so refreshing or sharing URL will open that page of table directly */
     navigate(`?page=${pageNumber}`);
   };
 

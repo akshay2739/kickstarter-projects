@@ -25,70 +25,42 @@ const Pagination: React.FC<PaginationProps> = ({
     setJumpPage(value === "" ? "" : Number(value));
   };
 
-  const handleJumpSubmit = () => {
-    if (
-      typeof jumpPage === "number" &&
-      jumpPage >= 1 &&
-      jumpPage <= totalPages
-    ) {
-      onPageChange(jumpPage);
+  const handleJumpKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && typeof jumpPage === "number") {
+      handlePageChange(jumpPage);
     }
   };
-
-  const getPaginationRange = () => {
-    const range = [];
-    const start = Math.max(1, currentPage - 2);
-    const end = Math.min(totalPages, currentPage + 2);
-
-    for (let i = start; i <= end; i++) {
-      range.push(i);
-    }
-
-    return range;
-  };
-
-  const isJumpPageValid =
-    typeof jumpPage === "number" && jumpPage >= 1 && jumpPage <= totalPages;
 
   return (
     <PaginationWrapper>
-      <PageNumber
-        active={false}
-        disabled={currentPage <= 1}
+      <button
         onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
       >
-        Prev
-      </PageNumber>
-      {getPaginationRange().map((page) => (
+        Previous
+      </button>
+      {Array.from({ length: totalPages }, (_, index) => (
         <PageNumber
-          key={page}
-          active={currentPage === page}
-          onClick={() => handlePageChange(page)}
+          key={index + 1}
+          active={index + 1 === currentPage}
+          onClick={() => handlePageChange(index + 1)}
         >
-          {page}
+          {index + 1}
         </PageNumber>
       ))}
-      <PageNumber
-        active={false}
-        disabled={currentPage >= totalPages}
+      <button
         onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
       >
         Next
-      </PageNumber>
-
-      <div className="input-wrapper">
-        <JumpInput
-          type="number"
-          min="1"
-          max={totalPages.toString()}
-          value={jumpPage}
-          onChange={handleJumpChange}
-          placeholder="Page"
-        />
-        <PageNumber onClick={handleJumpSubmit} disabled={!isJumpPageValid}>
-          Go
-        </PageNumber>
-      </div>
+      </button>
+      <JumpInput
+        type="number"
+        placeholder="Jump to page"
+        value={jumpPage}
+        onChange={handleJumpChange}
+        onKeyDown={handleJumpKeyDown}
+      />
     </PaginationWrapper>
   );
 };
