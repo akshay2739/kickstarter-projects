@@ -31,6 +31,16 @@ const Pagination: React.FC<PaginationProps> = ({
     }
   };
 
+  const handleJumpSubmit = () => {
+    if (
+      typeof jumpPage === "number" &&
+      jumpPage >= 1 &&
+      jumpPage <= totalPages
+    ) {
+      onPageChange(jumpPage);
+    }
+  };
+
   const getPageNumbers = () => {
     const pages = [];
     const startPage = Math.max(1, currentPage - 2);
@@ -50,6 +60,9 @@ const Pagination: React.FC<PaginationProps> = ({
 
     return pages;
   };
+
+  const isJumpPageValid =
+    typeof jumpPage === "number" && jumpPage >= 1 && jumpPage <= totalPages;
 
   return (
     <PaginationWrapper>
@@ -81,6 +94,9 @@ const Pagination: React.FC<PaginationProps> = ({
         onChange={handleJumpChange}
         onKeyDown={handleJumpKeyDown}
       />
+      <PageNumber onClick={handleJumpSubmit} disabled={!isJumpPageValid}>
+        Go
+      </PageNumber>
     </PaginationWrapper>
   );
 };
