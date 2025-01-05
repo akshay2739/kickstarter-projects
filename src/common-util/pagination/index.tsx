@@ -76,7 +76,7 @@ const Pagination: React.FC<PaginationProps> = ({
         Next
       </PageNumber>
 
-      <div>
+      <div className="input-wrapper">
         <JumpInput
           type="number"
           min="1"
@@ -85,9 +85,9 @@ const Pagination: React.FC<PaginationProps> = ({
           onChange={handleJumpChange}
           placeholder="Page"
         />
-        <button onClick={handleJumpSubmit} disabled={!isJumpPageValid}>
+        <PageNumber onClick={handleJumpSubmit} disabled={!isJumpPageValid}>
           Go
-        </button>
+        </PageNumber>
       </div>
     </PaginationWrapper>
   );

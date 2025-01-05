@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import KickStarterProjects from "./components/kickstarter-projects";
@@ -9,9 +10,14 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <AppWrapper>
-      <KickStarterProjects />
-    </AppWrapper>
+    <Router>
+      <AppWrapper>
+        <Routes>
+          <Route path="/" element={<KickStarterProjects />} />
+        </Routes>
+        <KickStarterProjects />
+      </AppWrapper>
+    </Router>
   </React.StrictMode>
 );
 

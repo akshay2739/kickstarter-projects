@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { fetchProjects } from "../../apis/projects";
 import { ProjectsWrapper, Table } from "./styles";
 import { ProjectsProcessed } from "../../common/types";
@@ -9,10 +10,19 @@ const KickStarterProjects = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [allProjects, setAllProjects] = useState<ProjectsProcessed>([]);
   const [projectsToShow, setProjectsToShow] = useState<ProjectsProcessed>([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const getPageFromQuery = () => {
+    const params = new URLSearchParams(location.search);
+    return parseInt(params.get("page") || "1", 10);
+  };
+
+  const [currentPage, setCurrentPage] = useState(getPageFromQuery());
 
   const onPageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+    navigate(`?page=${pageNumber}`);
   };
 
   useEffect(() => {
@@ -25,7 +35,7 @@ const KickStarterProjects = () => {
         setIsLoading(false);
       }, 200);
     }
-  }, [currentPage]);
+  }, [currentPage, allProjects]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +52,10 @@ const KickStarterProjects = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(getPageFromQuery());
+  }, [location.search]);
+
   const totalPages = Math.ceil(allProjects.length / 5);
 
   return (
@@ -52,18 +66,24 @@ const KickStarterProjects = () => {
       ) : (
         <>
           <Table>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Percentage funded</th>
-              <th>Amount pledged</th>
-            </tr>
-            {projectsToShow.map(({ amountPledged, sNo, percentageFunded }) => (
-              <tr key={sNo}>
-                <td>{sNo}</td>
-                <td>{percentageFunded}</td>
-                <td>{amountPledged}</td>
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Percentage funded</th>
+                <th>Amount pledged</th>
               </tr>
-            ))}
+            </thead>
+            <tbody>
+              {projectsToShow.map(
+                ({ amountPledged, sNo, percentageFunded }) => (
+                  <tr key={sNo}>
+                    <td>{sNo}</td>
+                    <td>{percentageFunded}</td>
+                    <td>{amountPledged}</td>
+                  </tr>
+                )
+              )}
+            </tbody>
           </Table>
           <Pagination
             totalPages={totalPages}
